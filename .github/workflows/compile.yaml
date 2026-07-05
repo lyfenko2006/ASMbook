@@ -1,0 +1,44 @@
+name: Build LaTeX and Create Release
+on:
+  pull_request:
+    branches: [ main ]  # Запуск для PR в ветку main
+  push:
+    tags:
+      - 'v*'            # Запуск для тегов, начинающихся с 'v'
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Compile LaTeX document
+        id: compile
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: main.tex # Имя вашего главного .tex файла
+
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-pdf
+          path: main.pdf   # Путь к скомпилированному файлу
+
+  release:
+    needs: compile
+    runs-on: ubuntu-latest
+    # Это задание запустится только для пушей тегов
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Download PDF artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: compiled-pdf
+          path: ./output
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./output/main.pdf
+          generate_release_notes: true
