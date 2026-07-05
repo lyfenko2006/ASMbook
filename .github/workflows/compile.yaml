@@ -1,7 +1,7 @@
 name: Build LaTeX and Create Release
 on:
   pull_request:
-    branches: [ main ]  # Запуск для PR в ветку main
+    branches: [ master ]  # Запуск для PR в ветку main
   push:
     tags:
       - 'v*'            # Запуск для тегов, начинающихся с 'v'
