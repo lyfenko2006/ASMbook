@@ -36,9 +36,12 @@ jobs:
         with:
           name: compiled-pdf
           path: ./output
+      
+      - name: Rename PDF to ASMbook.pdf
+        run: mv ./output/main.pdf ./output/ASMbook.pdf
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ./output/main.pdf
+          files: ./output/ASMbook.pdf
           generate_release_notes: true
